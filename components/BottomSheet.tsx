@@ -10,7 +10,8 @@ type Props = {
 
 export default function BottomSheet({ open, onClose, children, title }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const [vpTop, setVpTop] = useState(0);
+  const [vpHeight, setVpHeight] = useState<number | null>(null);
 
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
@@ -18,15 +19,15 @@ export default function BottomSheet({ open, onClose, children, title }: Props) {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // Sobe o sheet quando o teclado virtual abre (iOS Safari)
+  // Segue o visual viewport do iOS (abre acima do teclado)
   useEffect(() => {
     if (!open) return;
     const vv = window.visualViewport;
     if (!vv) return;
 
     const update = () => {
-      const offset = window.innerHeight - vv.height - vv.offsetTop;
-      setKeyboardOffset(Math.max(0, offset));
+      setVpTop(vv.offsetTop);
+      setVpHeight(vv.height);
     };
 
     update();
@@ -35,22 +36,27 @@ export default function BottomSheet({ open, onClose, children, title }: Props) {
     return () => {
       vv.removeEventListener("resize", update);
       vv.removeEventListener("scroll", update);
-      setKeyboardOffset(0);
+      setVpTop(0);
+      setVpHeight(null);
     };
   }, [open]);
 
   if (!open) return null;
 
+  const containerStyle: React.CSSProperties = vpHeight !== null
+    ? { position: "fixed", top: vpTop, left: 0, right: 0, height: vpHeight, zIndex: 50, display: "flex", alignItems: "flex-end" }
+    : { position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "flex-end" };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end">
+    <div style={containerStyle}>
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
       <div
         ref={ref}
-        className="relative w-full bg-[var(--background)] rounded-t-3xl shadow-2xl animate-slide-up max-h-[92vh] flex flex-col transition-transform duration-150"
-        style={{ transform: `translateY(-${keyboardOffset}px)` }}
+        className="relative w-full bg-[var(--background)] rounded-t-3xl shadow-2xl animate-slide-up flex flex-col"
+        style={{ maxHeight: vpHeight ? vpHeight * 0.92 : "92vh" }}
       >
         <div className="flex items-center justify-center pt-3 pb-1 shrink-0">
           <div className="w-10 h-1 rounded-full bg-[var(--border)]" />
