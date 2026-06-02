@@ -1,11 +1,16 @@
 import { ImageResponse } from "next/og";
+import { readFileSync } from "fs";
+import { join } from "path";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const alt = "Racha Aí – Divisor de Contas";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OGImage() {
+  const logoData = readFileSync(join(process.cwd(), "public/logo-white.png"));
+  const logoBase64 = `data:image/png;base64,${logoData.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -20,7 +25,6 @@ export default function OGImage() {
           fontFamily: "sans-serif",
         }}
       >
-        {/* círculo decorativo */}
         <div style={{
           position: "absolute", top: -80, right: -80,
           width: 400, height: 400, borderRadius: "50%",
@@ -32,21 +36,15 @@ export default function OGImage() {
           background: "rgba(255,255,255,0.1)",
         }} />
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
-          {/* emoji taça */}
-          <div style={{ fontSize: 120 }}>🥂</div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 28 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logoBase64} width={340} height={136} alt="Racha Aí" />
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 80, fontWeight: 900, color: "white", letterSpacing: -2 }}>
-              Racha Aí
-            </span>
-            <span style={{ fontSize: 36, color: "rgba(255,255,255,0.85)", fontWeight: 500 }}>
-              Divida a conta sem dividir a amizade.
-            </span>
-          </div>
+          <span style={{ fontSize: 36, color: "rgba(255,255,255,0.9)", fontWeight: 500 }}>
+            Divida a conta sem dividir a amizade.
+          </span>
 
           <div style={{
-            marginTop: 16,
             padding: "12px 32px",
             background: "rgba(255,255,255,0.2)",
             borderRadius: 999,
