@@ -38,7 +38,7 @@ export default function OGImage() {
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 28 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={logoBase64} width={340} height={136} alt="Racha Aí" />
+          <img src={logoBase64} width={320} height={250} alt="Racha Aí" />
 
           <span style={{ fontSize: 36, color: "rgba(255,255,255,0.9)", fontWeight: 500 }}>
             Divida a conta sem dividir a amizade.
