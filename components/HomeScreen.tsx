@@ -33,13 +33,13 @@ export default function HomeScreen() {
         style={{ background: "white", transform: "translate(-25%, 0)" }} />
 
       {/* Logo + slogan */}
-      <div className="flex flex-col items-center justify-center flex-1 px-6 pt-8 pb-2 text-center">
+      <div className="flex flex-col items-center justify-center flex-1 px-6 pt-8 pb-6 text-center">
         <Image
           src={darkMode ? "/logo-escuro.png" : "/logo-claro.png"}
           alt="Racha Aí"
           width={180}
           height={72}
-          className="object-contain brightness-0 invert mb-4"
+          className="object-contain mb-2"
           priority
         />
         <p className="text-white text-xl font-bold leading-snug">
