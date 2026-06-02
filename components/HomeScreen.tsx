@@ -24,7 +24,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "var(--accent)" }}>
+    <div className="min-h-screen flex flex-col overflow-hidden" style={{ background: "var(--accent)" }}>
 
 {/* Logo + slogan — ocupa ~45% da tela */}
       <div className="flex flex-col items-center justify-center flex-[2] px-6 pt-16 pb-4 text-center">
