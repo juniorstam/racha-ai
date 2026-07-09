@@ -174,14 +174,14 @@ export default function ResultScreen() {
         <div className="h-20" />
       </div>
 
-      {/* Botão fixo — Voltar ao Início */}
+      {/* Botão fixo — Nova Conta */}
       <div className="fixed bottom-0 left-0 right-0 z-30 px-4 pb-6 pt-3 bg-gradient-to-t from-[var(--background)] via-[var(--background)] to-transparent">
         <button
           onClick={resetBill}
           className="w-full max-w-lg mx-auto flex items-center justify-center gap-2 h-14 rounded-2xl bg-emerald-500 text-white font-bold text-base active:scale-95 transition-transform shadow-lg"
           style={{ display: "flex" }}
         >
-          <RotateCcw size={18} /> Voltar ao Início
+          <RotateCcw size={18} /> Nova Conta
         </button>
       </div>
 
