@@ -33,6 +33,16 @@ export const formatDate = (ts: number) =>
     new Date(ts)
   );
 
+// Nome padrão da conta com base no horário — evita repetir "Nova Conta" no histórico
+export const defaultBillName = (date: Date = new Date()) => {
+  const h = date.getHours();
+  if (h >= 5 && h < 12) return "Café da Manhã";
+  if (h >= 12 && h < 15) return "Almoço";
+  if (h >= 15 && h < 19) return "Happy Hour";
+  if (h >= 19 && h < 24) return "Jantar";
+  return "Rolê da Madrugada";
+};
+
 // Palavras numéricas em português → número
 const NUMEROS: Record<string, number> = {
   um: 1, uma: 1, dois: 2, duas: 2, três: 3, tres: 3, quatro: 4, cinco: 5,

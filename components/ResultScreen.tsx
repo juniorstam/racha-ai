@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Share2, Copy, Check, RotateCcw, QrCode, ChevronDown, ChevronUp, Wallet } from "lucide-react";
+import { Share2, Copy, Check, RotateCcw, QrCode, ChevronDown, ChevronUp, Wallet, CheckCircle2, Circle } from "lucide-react";
 import { useStore, BillResult } from "@/lib/store";
 import { fmt, shareText, copyText } from "@/lib/utils";
 import TopBar from "./TopBar";
@@ -8,7 +8,7 @@ import BottomSheet from "./BottomSheet";
 import QRCode from "./QRCode";
 
 export default function ResultScreen() {
-  const { computeResults, resetBill, bill, setStep } = useStore();
+  const { computeResults, resetBill, bill, setStep, togglePaid } = useStore();
   const results = computeResults();
   const [expanded, setExpanded] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -17,6 +17,10 @@ export default function ResultScreen() {
   const [pixKey, setPixKey] = useState("");
 
   const total = results.reduce((s, r) => s + r.total, 0);
+  const paidPersonIds = bill.paidPersonIds ?? [];
+  const paidResults = results.filter((r) => paidPersonIds.includes(r.personId));
+  const remaining = total - paidResults.reduce((s, r) => s + r.total, 0);
+  const allPaid = results.length > 0 && paidResults.length === results.length;
 
   const shareMsg = () => {
     const lines = results.map((r) => `${r.name}: ${fmt(r.total)}`);
@@ -55,6 +59,20 @@ export default function ResultScreen() {
           <p className="text-sm font-semibold opacity-80">{bill.name} · {bill.persons.length} pessoas</p>
           <p className="text-4xl font-black mt-1 tracking-tight">{fmt(total)}</p>
           <p className="text-sm opacity-70 mt-0.5">Total da conta</p>
+
+          {paidPersonIds.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-white/20">
+              {allPaid ? (
+                <p className="text-sm font-bold">🎉 Tudo pago!</p>
+              ) : (
+                <p className="text-sm font-bold">Falta receber: {fmt(remaining)}</p>
+              )}
+              <p className="text-xs opacity-70 mt-0.5">
+                ✓ {paidResults.map((r) => r.name).join(", ")} {paidResults.length === 1 ? "pagou" : "pagaram"}
+              </p>
+            </div>
+          )}
+
           <div className="flex gap-2 mt-4">
             <button
               onClick={shareMsg}
@@ -75,8 +93,9 @@ export default function ResultScreen() {
         {/* Per-person cards */}
         {results.map((r) => {
           const isOpen = expanded === r.personId;
+          const isPaid = paidPersonIds.includes(r.personId);
           return (
-            <div key={r.personId} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden animate-fade-in">
+            <div key={r.personId} className={`rounded-2xl bg-[var(--surface)] border overflow-hidden animate-fade-in transition-colors ${isPaid ? "border-[var(--accent)]" : "border-[var(--border)]"}`}>
               <button
                 onClick={() => setExpanded(isOpen ? null : r.personId)}
                 className="w-full flex items-center gap-3 p-4 active:bg-[var(--border)]/30 transition-colors"
@@ -93,6 +112,7 @@ export default function ResultScreen() {
                     {r.items.length} {r.items.length === 1 ? "item" : "itens"}
                     {r.fees > 0 && ` · +${fmt(r.fees)} taxas`}
                     {r.discounts > 0 && ` · -${fmt(r.discounts)} desc.`}
+                    {isPaid && <span className="text-[var(--accent)] font-bold"> · ✓ Pago</span>}
                   </p>
                 </div>
                 <div className="text-right">
@@ -132,6 +152,17 @@ export default function ResultScreen() {
                     >
                       <QrCode size={15} /> PIX / QR Code
                     </button>
+                    <button
+                      onClick={() => togglePaid(r.personId)}
+                      className={`w-full h-10 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform ${
+                        isPaid
+                          ? "bg-[var(--accent)] text-white"
+                          : "bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)]"
+                      }`}
+                    >
+                      {isPaid ? <CheckCircle2 size={15} /> : <Circle size={15} />}
+                      {isPaid ? `${r.name} pagou` : `Marcar ${r.name} como pago`}
+                    </button>
                   </div>
                 </div>
               )}
@@ -155,7 +186,7 @@ export default function ResultScreen() {
       </div>
 
       {/* PIX Sheet */}
-      <BottomSheet open={pixSheet} onClose={() => setPixSheet(false)} title={`PIX para ${pixPerson?.name}`}>
+      <BottomSheet open={pixSheet} onClose={() => setPixSheet(false)} title={`PIX de ${pixPerson?.name}`}>
         <div className="px-4 pb-8 flex flex-col gap-4 items-center">
           <div className="w-full bg-[var(--surface)] rounded-2xl p-4 text-center">
             <p className="text-3xl font-black text-[var(--foreground)]">{pixPerson && fmt(pixPerson.total)}</p>
@@ -165,6 +196,9 @@ export default function ResultScreen() {
             <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">
               Sua chave PIX (CPF, email, telefone ou aleatória)
             </label>
+            <p className="text-xs text-[var(--muted)] mt-0.5">
+              para receber o PIX de {pixPerson?.name}
+            </p>
             <input
               className="mt-1 w-full h-12 px-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)] font-semibold focus:outline-none focus:border-[var(--foreground)] transition-colors"
               placeholder="Ex: 123.456.789-00"

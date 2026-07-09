@@ -1,6 +1,6 @@
 "use client";
 import { ChevronRight, AlertTriangle, Check, CheckCheck } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useStore, BillItem } from "@/lib/store";
 import { fmt } from "@/lib/utils";
 import TopBar from "./TopBar";
 import StepBar from "./StepBar";
@@ -30,7 +30,17 @@ export default function AttributionScreen() {
   const totalAssigned = (itemId: string) =>
     Object.values(attribution[itemId] ?? {}).reduce((s, q) => s + q, 0);
 
-  const pending = items.filter((i) => totalAssigned(i.id) === 0);
+  // Item está completo quando não sobra nem falta unidade a distribuir
+  const isItemComplete = (item: BillItem) => {
+    const qtys = attribution[item.id] ?? {};
+    const assigned = totalAssigned(item.id);
+    const isAllMarked = persons.length > 0 && persons.every((p) => (qtys[p.id] ?? 0) >= 1);
+    if (isAllMarked) return true;
+    if (item.quantity === 1) return assigned > 0;
+    return assigned === item.quantity;
+  };
+
+  const pending = items.filter((i) => !isItemComplete(i));
   const allDone = pending.length === 0;
 
   return (
@@ -43,7 +53,7 @@ export default function AttributionScreen() {
           style={{ background: "#FEF3C7", border: "1px solid #F59E0B" }}>
           <AlertTriangle size={22} style={{ color: "#B45309" }} className="shrink-0" />
           <p className="text-sm font-bold" style={{ color: "#78350F" }}>
-            {pending.length} {pending.length === 1 ? "item não atribuído" : "itens não atribuídos"}
+            {pending.length} {pending.length === 1 ? "item pendente" : "itens pendentes"}
           </p>
         </div>
       )}
@@ -55,7 +65,7 @@ export default function AttributionScreen() {
           const totalPrice = item.quantity * item.unitPrice;
           // "Dividir todos" marca todos com qty=1 — isso é divisão igual independente da qty do item
           const isAllMarked = persons.length > 0 && persons.every((p) => (qtys[p.id] ?? 0) >= 1);
-          const isComplete = assigned > 0;
+          const isComplete = isItemComplete(item);
           const isOver = item.quantity > 1 && !isAllMarked && assigned > item.quantity;
 
           return (
@@ -175,10 +185,13 @@ export default function AttributionScreen() {
             Voltar
           </button>
           <button
-            onClick={() => setStep("fees")}
-            className="flex-1 h-12 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm bg-[var(--accent)] text-white active:scale-95 transition-all"
+            onClick={() => allDone && setStep("fees")}
+            disabled={!allDone}
+            className={`flex-1 h-12 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm transition-all active:scale-95 ${
+              allDone ? "bg-[var(--accent)] text-white" : "bg-[var(--border)] text-[var(--muted)]"
+            }`}
           >
-            {allDone ? "Próximo" : "Pular taxas"} <ChevronRight size={18} />
+            Próximo <ChevronRight size={18} />
           </button>
         </div>
       </div>

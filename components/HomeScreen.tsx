@@ -1,17 +1,21 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { Camera, Mic, Keyboard, FolderOpen } from "lucide-react";
+import { Camera, Mic, Keyboard, FolderOpen, Share2 } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { shareText } from "@/lib/utils";
 import HistorySheet from "./HistorySheet";
 
 export default function HomeScreen() {
-  const { setStep, setBill, resetBill, darkMode } = useStore();
+  const { setStep, resetBill, darkMode } = useStore();
   const [histOpen, setHistOpen] = useState(false);
+
+  const shareApp = () => {
+    shareText("🍻 Divida a conta com Racha Aí — grátis e sem cadastro: https://rachaai.stamcom.com.br");
+  };
 
   const start = (entryMethod?: string) => {
     resetBill();
-    setBill({ mode: "restaurant", name: "Nova Conta" });
     if (entryMethod === "voice") {
       setStep("items");
       setTimeout(() => window.dispatchEvent(new CustomEvent("racha-start-voice")), 300);
@@ -31,6 +35,14 @@ export default function HomeScreen() {
         style={{ background: "white", transform: "translate(25%, -25%)" }} />
       <div className="absolute top-[38%] left-0 w-40 h-40 rounded-full opacity-10 pointer-events-none"
         style={{ background: "white", transform: "translate(-25%, 0)" }} />
+
+      {/* Compartilhar o app */}
+      <button
+        onClick={shareApp}
+        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center active:scale-95 transition-transform"
+      >
+        <Share2 size={18} className="text-white" />
+      </button>
 
       {/* Logo + slogan */}
       <div className="flex flex-col items-center justify-center flex-1 px-6 pt-8 pb-12 text-center">
