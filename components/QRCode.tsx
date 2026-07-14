@@ -13,7 +13,7 @@ export default function QRCode({ value, size = 200 }: Props) {
       QR.toCanvas(canvasRef.current, value, {
         width: size,
         margin: 2,
-        color: { dark: "#6C47FF", light: "#ffffff" },
+        color: { dark: "#10B981", light: "#ffffff" },
       });
     });
     return () => { cancelled = true; };
