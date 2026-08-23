@@ -69,6 +69,7 @@ type AppState = {
   bill: Bill;
   history: Bill[];
   darkMode: boolean;
+  beerCounts: Record<string, number>;
   step: "home" | "items" | "persons" | "attribution" | "fees" | "result";
   setBill: (b: Partial<Bill>) => void;
   setStep: (s: AppState["step"]) => void;
@@ -92,6 +93,10 @@ type AppState = {
   resetBill: () => void;
   toggleDark: () => void;
   computeResults: () => BillResult[];
+  addBeerBrand: (brand: string) => void;
+  incBeer: (brand: string) => void;
+  decBeer: (brand: string) => void;
+  resetBeerCounter: () => void;
 };
 
 // Paleta neutra — tons distintos mas não gritantes
@@ -119,6 +124,7 @@ export const useStore = create<AppState>()(
       bill: newBill(),
       history: [],
       darkMode: true,
+      beerCounts: {},
       step: "home",
 
       setBill: (b) => set((s) => ({ bill: { ...s.bill, ...b } })),
@@ -288,8 +294,16 @@ export const useStore = create<AppState>()(
 
         return results;
       },
+
+      addBeerBrand: (brand) =>
+        set((s) => ({ beerCounts: { ...s.beerCounts, [brand]: (s.beerCounts[brand] ?? 0) + 1 } })),
+      incBeer: (brand) =>
+        set((s) => ({ beerCounts: { ...s.beerCounts, [brand]: (s.beerCounts[brand] ?? 0) + 1 } })),
+      decBeer: (brand) =>
+        set((s) => ({ beerCounts: { ...s.beerCounts, [brand]: Math.max(0, (s.beerCounts[brand] ?? 0) - 1) } })),
+      resetBeerCounter: () => set({ beerCounts: {} }),
     }),
-    { name: "racha-ai-v2", partialize: (s) => ({ history: s.history, darkMode: s.darkMode }) }
+    { name: "racha-ai-v2", partialize: (s) => ({ history: s.history, darkMode: s.darkMode, beerCounts: s.beerCounts }) }
   )
 );
 

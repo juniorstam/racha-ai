@@ -1,14 +1,17 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { Camera, Mic, Keyboard, FolderOpen, Share2 } from "lucide-react";
+import { Camera, Mic, Keyboard, FolderOpen, Share2, Beer } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { shareText } from "@/lib/utils";
 import HistorySheet from "./HistorySheet";
+import BeerCounterSheet from "./BeerCounterSheet";
 
 export default function HomeScreen() {
-  const { setStep, resetBill, darkMode } = useStore();
+  const { setStep, resetBill, darkMode, beerCounts } = useStore();
   const [histOpen, setHistOpen] = useState(false);
+  const [beerOpen, setBeerOpen] = useState(false);
+  const beerTotal = Object.values(beerCounts).reduce((s, n) => s + n, 0);
 
   const shareApp = () => {
     shareText("🍻 Divida a conta com Racha Aí — grátis e sem cadastro: https://rachaai.stamcom.com.br");
@@ -35,6 +38,20 @@ export default function HomeScreen() {
         style={{ background: "white", transform: "translate(25%, -25%)" }} />
       <div className="absolute top-[38%] left-0 w-40 h-40 rounded-full opacity-10 pointer-events-none"
         style={{ background: "white", transform: "translate(-25%, 0)" }} />
+
+      {/* Contador de cervejas */}
+      <button
+        onClick={() => setBeerOpen(true)}
+        className="absolute top-4 left-4 z-10 flex items-center gap-2 h-11 pl-3 pr-4 rounded-full shadow-lg active:scale-95 transition-transform bg-white/15"
+      >
+        <Beer size={20} className="text-white" />
+        <span className="text-white font-bold text-sm">Cervejas</span>
+        {beerTotal > 0 && (
+          <span className="ml-0.5 min-w-[20px] h-5 px-1 rounded-full bg-white/25 flex items-center justify-center text-white text-xs font-bold tabular-nums">
+            {beerTotal}
+          </span>
+        )}
+      </button>
 
       {/* Compartilhar o app */}
       <button
@@ -74,6 +91,7 @@ export default function HomeScreen() {
       </div>
 
       <HistorySheet open={histOpen} onClose={() => setHistOpen(false)} />
+      <BeerCounterSheet open={beerOpen} onClose={() => setBeerOpen(false)} />
     </div>
   );
 }

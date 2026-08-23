@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { Plus, Trash2, ChevronRight, Percent, DollarSign, User } from "lucide-react";
 import { useStore, Fee, Discount } from "@/lib/store";
 import { uid, fmt } from "@/lib/utils";
@@ -169,6 +170,13 @@ export default function FeesScreen() {
       </div>
 
       <div className="sticky bottom-0 bg-[var(--background)]/95 backdrop-blur border-t border-[var(--border)] px-4 py-3 max-w-lg mx-auto w-full">
+        <Image
+          src="/banner-rachaai.webp"
+          alt="Racha Aí — some as cervejas, a gente racha o resto."
+          width={1024}
+          height={360}
+          className="w-full h-auto rounded-2xl mb-3"
+        />
         <div className="flex gap-2">
           <button
             onClick={() => setStep("attribution")}
