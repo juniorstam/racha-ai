@@ -171,8 +171,8 @@ export default function FeesScreen() {
 
       <div className="sticky bottom-0 bg-[var(--background)]/95 backdrop-blur border-t border-[var(--border)] px-4 py-3 max-w-lg mx-auto w-full">
         <Image
-          src="/banner-rachaai.webp"
-          alt="Racha Aí — some as cervejas, a gente racha o resto."
+          src="/banner-lippaus.webp"
+          alt="Lippaus — Cerveja gelada na mesa e conta certa no final."
           width={1024}
           height={360}
           className="w-full h-auto rounded-2xl mb-3"

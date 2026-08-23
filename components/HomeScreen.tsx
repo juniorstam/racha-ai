@@ -31,7 +31,17 @@ export default function HomeScreen() {
   };
 
   return (
-    <div className="relative flex flex-col overflow-hidden" style={{ background: "var(--accent)", height: "100dvh" }}>
+    <div
+      className="relative flex flex-col overflow-hidden"
+      style={{
+        backgroundColor: "var(--accent)",
+        backgroundImage: "url(/bg-home.webp)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        height: "100dvh",
+      }}
+    >
 
       {/* Círculos decorativos */}
       <div className="absolute top-0 right-0 w-56 h-56 rounded-full opacity-10 pointer-events-none"
@@ -42,7 +52,8 @@ export default function HomeScreen() {
       {/* Contador de cervejas */}
       <button
         onClick={() => setBeerOpen(true)}
-        className="absolute top-4 left-4 z-10 flex items-center gap-2 h-11 pl-3 pr-4 rounded-full shadow-lg active:scale-95 transition-transform bg-white/15"
+        className="absolute top-4 left-4 z-10 flex items-center gap-2 h-11 pl-3 pr-4 rounded-full shadow-lg active:scale-95 transition-transform"
+        style={{ backgroundColor: "var(--accent)" }}
       >
         <Beer size={20} className="text-white" />
         <span className="text-white font-bold text-sm">Cervejas</span>
@@ -68,9 +79,12 @@ export default function HomeScreen() {
           alt="Racha Aí"
           width={180}
           height={72}
-          className="object-contain brightness-0 invert mb-1"
+          className="object-contain brightness-0 invert"
           priority
         />
+        <p className="text-white/80 text-sm font-bold tracking-[0.2em] uppercase -mt-1 mb-2">
+          SplitIt
+        </p>
         <p className="text-white text-xl font-bold leading-snug">
           Divida a conta sem<br />dividir a amizade.
         </p>
@@ -86,7 +100,7 @@ export default function HomeScreen() {
         </div>
 
         <p className="mt-6 text-center text-sm text-white/70">
-          Racha Aí · Grátis · Sem cadastro
+          splitit.com.br
         </p>
       </div>
 
