@@ -52,7 +52,7 @@ export default function OGImage() {
             fontSize: 28,
             fontWeight: 700,
           }}>
-            rachaai.stamcom.com.br
+            splitit.com.br
           </div>
         </div>
       </div>

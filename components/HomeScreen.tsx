@@ -14,7 +14,7 @@ export default function HomeScreen() {
   const beerTotal = Object.values(beerCounts).reduce((s, n) => s + n, 0);
 
   const shareApp = () => {
-    shareText("🍻 Divida a conta com Racha Aí — grátis e sem cadastro: https://rachaai.stamcom.com.br");
+    shareText("🍻 Divida a conta com Racha Aí — grátis e sem cadastro: https://splitit.com.br");
   };
 
   const start = (entryMethod?: string) => {
@@ -73,19 +73,19 @@ export default function HomeScreen() {
       </button>
 
       {/* Logo + slogan */}
-      <div className="flex flex-col items-center justify-center flex-1 px-6 pt-8 pb-12 text-center">
+      <div className="flex flex-col items-center justify-center flex-1 px-6 pt-6 pb-8 text-center">
         <Image
           src={darkMode ? "/logo-escuro.png" : "/logo-claro.png"}
           alt="Racha Aí"
-          width={180}
-          height={72}
+          width={140}
+          height={56}
           className="object-contain brightness-0 invert"
           priority
         />
-        <p className="text-white/80 text-sm font-bold tracking-[0.2em] uppercase -mt-1 mb-2">
+        <p className="text-white/80 text-xs font-bold tracking-[0.2em] uppercase -mt-1 mb-2">
           SplitIt
         </p>
-        <p className="text-white text-xl font-bold leading-snug">
+        <p className="text-white text-base font-bold leading-snug">
           Divida a conta sem<br />dividir a amizade.
         </p>
       </div>
@@ -98,10 +98,6 @@ export default function HomeScreen() {
           <Btn icon={<Camera size={40} />}      title="Foto"     sub="da Conta"    onClick={() => start("ocr")} />
           <Btn icon={<FolderOpen size={40} />}  title="Abrir"    sub="Conta Salva" onClick={() => setHistOpen(true)} />
         </div>
-
-        <p className="mt-6 text-center text-sm text-white/70">
-          splitit.com.br
-        </p>
       </div>
 
       <HistorySheet open={histOpen} onClose={() => setHistOpen(false)} />

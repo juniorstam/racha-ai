@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Racha Aí – Divisor de Contas",
     description: "Divida a conta sem dividir a amizade.",
-    url: "https://rachaai.stamcom.com.br",
+    url: "https://splitit.com.br",
     siteName: "Racha Aí",
     locale: "pt_BR",
     type: "website",
