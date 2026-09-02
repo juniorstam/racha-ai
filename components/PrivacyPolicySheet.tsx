@@ -54,7 +54,7 @@ export default function PrivacyPolicySheet({ open, onClose }: { open: boolean; o
 
         <div>
           <p className="font-bold text-[var(--foreground)] mb-1">Contato</p>
-          <p>Dúvidas sobre privacidade: juniorstam@gmail.com</p>
+          <p>Dúvidas sobre privacidade: contato@splitit.com.br</p>
         </div>
       </div>
     </BottomSheet>
