@@ -21,12 +21,34 @@ export default function FeesScreen() {
 
   const subtotal = bill.items.reduce((s, i) => s + i.quantity * i.unitPrice, 0);
 
-  const addQuickFee = (pct: number) => {
+  const openFeeSheet = () => {
+    const current = bill.fees[0];
+    if (current) {
+      setFeeLabel(current.label);
+      setFeeType(current.type);
+      setFeeValue(String(current.value).replace(".", ","));
+    } else {
+      setFeeLabel("Taxa de Serviço");
+      setFeeType("percent");
+      setFeeValue("10");
+    }
+    setFeeSheet(true);
+  };
+
+  const quickSetFee = (pct: number) => {
+    bill.fees.forEach((f) => removeFee(f.id));
     addFee({ id: uid(), label: `Taxa de Serviço ${pct}%`, type: "percent", value: pct });
+    setFeeSheet(false);
+  };
+
+  const removeCurrentFee = () => {
+    bill.fees.forEach((f) => removeFee(f.id));
+    setFeeSheet(false);
   };
 
   const saveFee = () => {
     if (!feeLabel.trim() || !feeValue) return;
+    bill.fees.forEach((f) => removeFee(f.id));
     addFee({
       id: uid(),
       label: feeLabel.trim(),
@@ -104,50 +126,28 @@ export default function FeesScreen() {
           </div>
         </div>
 
-        {/* Taxa de serviço 10% + botão personalizada */}
+        {/* Taxa de serviço + desconto/cupom */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">Taxa de Serviço</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">Taxas e Descontos</p>
           <div className="flex gap-2">
-            {(() => {
-              const active = bill.fees.some((f) => f.label === "Taxa de Serviço 10%");
-              return (
-                <button
-                  onClick={() => !active && addQuickFee(10)}
-                  className={`flex-1 h-12 rounded-2xl text-sm font-bold transition-all active:scale-95 ${
-                    active ? "bg-[var(--accent)] text-white" : "bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)]"
-                  }`}
-                >
-                  10%
-                </button>
-              );
-            })()}
             <button
-              onClick={() => setFeeSheet(true)}
-              className="flex-[2] h-12 rounded-2xl border-2 border-dashed border-[var(--border)] text-[var(--muted)] text-sm font-bold active:scale-95 transition-transform flex items-center justify-center gap-2"
+              onClick={openFeeSheet}
+              className={`flex-1 h-12 rounded-2xl text-sm font-bold transition-all active:scale-95 ${
+                bill.fees.length > 0
+                  ? "bg-[var(--accent)] text-white"
+                  : "bg-[var(--surface)] border-2 border-dashed border-[var(--border)] text-[var(--muted)]"
+              }`}
             >
-              <Plus size={15} /> Personalizada
+              {bill.fees.length > 0 ? feeChipLabel(bill.fees) : "+ Taxa de Serviço"}
+            </button>
+            <button
+              onClick={() => setDiscSheet(true)}
+              className="flex-1 h-12 rounded-2xl border-2 border-dashed border-emerald-300 dark:border-emerald-800 text-emerald-600 text-sm font-bold active:scale-95 transition-transform flex items-center justify-center gap-2"
+            >
+              <Plus size={15} /> Desconto / Cupom
             </button>
           </div>
         </div>
-
-        {/* Fees list */}
-        {bill.fees.length > 0 && (
-          <div>
-            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">Taxas Adicionadas</p>
-            <div className="flex flex-col gap-2">
-              {bill.fees.map((fee) => (
-                <FeeRow key={fee.id} label={fee.label} value={feeDisplay(fee, subtotal, bill.persons.length)} onRemove={() => removeFee(fee.id)} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <button
-          onClick={() => setFeeSheet(true)}
-          className="hidden"
-        >
-          <Plus size={16} /> Adicionar Taxa Personalizada
-        </button>
 
         {/* Discounts list */}
         {bill.discounts.length > 0 && (
@@ -160,13 +160,6 @@ export default function FeesScreen() {
             </div>
           </div>
         )}
-
-        <button
-          onClick={() => setDiscSheet(true)}
-          className="flex items-center gap-3 h-12 px-4 rounded-2xl border-2 border-dashed border-emerald-300 dark:border-emerald-800 text-emerald-600 text-sm font-bold active:scale-95 transition-transform"
-        >
-          <Plus size={16} /> Adicionar Desconto / Cupom
-        </button>
       </div>
 
       <div className="sticky bottom-0 bg-[var(--background)]/95 backdrop-blur border-t border-[var(--border)] px-4 py-3 max-w-lg mx-auto w-full">
@@ -188,8 +181,30 @@ export default function FeesScreen() {
       </div>
 
       {/* Fee sheet */}
-      <BottomSheet open={feeSheet} onClose={() => setFeeSheet(false)} title="Adicionar Taxa">
+      <BottomSheet open={feeSheet} onClose={() => setFeeSheet(false)} title="Taxa de Serviço">
         <div className="px-4 pb-8 flex flex-col gap-3">
+          {bill.fees.length > 0 && (
+            <div className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
+              <div className="flex-1">
+                <p className="font-bold text-[var(--foreground)] text-sm">{bill.fees[0].label}</p>
+                <p className="text-xs font-semibold text-orange-500">{feeDisplay(bill.fees[0], subtotal, bill.persons.length)}</p>
+              </div>
+              <button onClick={removeCurrentFee} className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/30 flex items-center justify-center active:scale-95 transition-transform">
+                <Trash2 size={14} className="text-red-500" />
+              </button>
+            </div>
+          )}
+          <div className="flex gap-2">
+            {[10, 15].map((pct) => (
+              <button
+                key={pct}
+                onClick={() => quickSetFee(pct)}
+                className="flex-1 h-10 rounded-2xl text-xs font-bold bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)] active:scale-95 transition-all"
+              >
+                {pct}%
+              </button>
+            ))}
+          </div>
           <input
             className="h-12 px-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)] font-semibold focus:outline-none focus:border-[var(--foreground)]"
             placeholder="Nome (ex: Couvert, Gorjeta...)"
@@ -221,7 +236,7 @@ export default function FeesScreen() {
             inputMode="decimal"
           />
           <button onClick={saveFee} disabled={!feeLabel.trim() || !feeValue} className="h-14 rounded-2xl bg-[var(--accent)] text-white font-bold text-base disabled:opacity-40 active:scale-95 transition-transform">
-            Adicionar Taxa
+            Salvar Taxa
           </button>
         </div>
       </BottomSheet>
@@ -285,4 +300,12 @@ function feeDisplay(fee: Fee, subtotal: number, personCount: number): string {
   if (fee.type === "percent") return `+${fmt(subtotal * fee.value / 100)} (${fee.value}%)`;
   if (fee.type === "fixed") return `+${fmt(fee.value)}`;
   return `+${fmt(fee.value * personCount)} (${fmt(fee.value)}/pessoa)`;
+}
+
+function feeChipLabel(fees: Fee[]): string {
+  if (fees.length > 1) return `${fees.length} taxas`;
+  const fee = fees[0];
+  if (fee.type === "percent") return `${fee.value}%`;
+  if (fee.type === "fixed") return fmt(fee.value);
+  return `${fmt(fee.value)}/pessoa`;
 }
