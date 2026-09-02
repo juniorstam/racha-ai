@@ -33,9 +33,20 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
+      <head>
+        {ADSENSE_CLIENT && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        )}
+      </head>
       <body>{children}</body>
     </html>
   );

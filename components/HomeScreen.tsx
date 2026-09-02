@@ -6,11 +6,13 @@ import { useStore } from "@/lib/store";
 import { shareText } from "@/lib/utils";
 import HistorySheet from "./HistorySheet";
 import BeerCounterSheet from "./BeerCounterSheet";
+import PrivacyPolicySheet from "./PrivacyPolicySheet";
 
 export default function HomeScreen() {
   const { setStep, resetBill, darkMode, beerCounts } = useStore();
   const [histOpen, setHistOpen] = useState(false);
   const [beerOpen, setBeerOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   const beerTotal = Object.values(beerCounts).reduce((s, n) => s + n, 0);
 
   const shareApp = () => {
@@ -98,10 +100,17 @@ export default function HomeScreen() {
           <Btn icon={<Camera size={40} />}      title="Foto"     sub="da Conta"    onClick={() => start("ocr")} />
           <Btn icon={<FolderOpen size={40} />}  title="Abrir"    sub="Conta Salva" onClick={() => setHistOpen(true)} />
         </div>
+        <button
+          onClick={() => setPrivacyOpen(true)}
+          className="mt-4 text-white/50 text-[11px] underline underline-offset-2 self-center active:opacity-70"
+        >
+          Política de Privacidade
+        </button>
       </div>
 
       <HistorySheet open={histOpen} onClose={() => setHistOpen(false)} />
       <BeerCounterSheet open={beerOpen} onClose={() => setBeerOpen(false)} />
+      <PrivacyPolicySheet open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </div>
   );
 }
