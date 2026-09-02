@@ -149,14 +149,6 @@ export default function PersonsScreen() {
           </button>
         </div>
 
-        {listening && (
-          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl px-4 py-3 mb-4 text-center">
-            <p className="text-sm font-semibold text-[var(--foreground)]">
-              🎤 Fale os nomes: "João, Maria e Carlos"
-            </p>
-          </div>
-        )}
-
         {/* Lista de pessoas */}
         <div className="flex flex-col gap-2">
           {bill.persons.map((person) => (
@@ -187,7 +179,16 @@ export default function PersonsScreen() {
       </div>
 
       <div className="sticky bottom-0 bg-[var(--background)]/95 backdrop-blur border-t border-[var(--border)] px-4 py-3 max-w-lg mx-auto w-full">
-        <AdBanner slot={process.env.NEXT_PUBLIC_AD_SLOT_PERSONS} />
+        {listening ? (
+          <div className="h-[50px] rounded-2xl bg-[var(--surface)] border border-[var(--border)] mb-3 flex items-center justify-center gap-2 px-4">
+            <Mic size={16} className="text-red-500 shrink-0" />
+            <p className="text-sm font-semibold text-[var(--foreground)] text-center truncate">
+              Fale os nomes: &ldquo;João, Maria e Carlos&rdquo;
+            </p>
+          </div>
+        ) : (
+          <AdBanner slot={process.env.NEXT_PUBLIC_AD_SLOT_PERSONS} />
+        )}
         <div className="flex gap-2">
           <button
             onClick={() => setStep("items")}
