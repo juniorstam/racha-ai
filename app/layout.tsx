@@ -41,18 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <head>
         {ADSENSE_CLIENT && (
-          <>
-            <script
-              async
-              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-              crossOrigin="anonymous"
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `(window.adsbygoogle = window.adsbygoogle || []).push({google_ad_client: "${ADSENSE_CLIENT}", enable_page_level_ads: true});`,
-              }}
-            />
-          </>
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
         )}
       </head>
       <body>
