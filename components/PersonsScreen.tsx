@@ -5,7 +5,6 @@ import { useStore, Person, PERSON_COLORS } from "@/lib/store";
 import { uid } from "@/lib/utils";
 import TopBar from "./TopBar";
 import StepBar from "./StepBar";
-import AdBanner from "./AdBanner";
 
 // Separa nomes por vírgula, ponto-e-vírgula, " e ", " com "
 // NÃO quebra em espaço simples — "Maria Clara" continua um nome só
@@ -186,9 +185,7 @@ export default function PersonsScreen() {
               Fale os nomes: &ldquo;João, Maria e Carlos&rdquo;
             </p>
           </div>
-        ) : (
-          <AdBanner slot={process.env.NEXT_PUBLIC_AD_SLOT_PERSONS} />
-        )}
+        ) : null}
         <div className="flex gap-2">
           <button
             onClick={() => setStep("items")}

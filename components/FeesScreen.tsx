@@ -6,7 +6,6 @@ import { uid, fmt } from "@/lib/utils";
 import TopBar from "./TopBar";
 import StepBar from "./StepBar";
 import BottomSheet from "./BottomSheet";
-import AdBanner from "./AdBanner";
 
 export default function FeesScreen() {
   const { bill, addFee, removeFee, addDiscount, removeDiscount, setStep, saveBill } = useStore();
@@ -163,7 +162,6 @@ export default function FeesScreen() {
       </div>
 
       <div className="sticky bottom-0 bg-[var(--background)]/95 backdrop-blur border-t border-[var(--border)] px-4 py-3 max-w-lg mx-auto w-full">
-        <AdBanner slot={process.env.NEXT_PUBLIC_AD_SLOT_FEES} />
         <div className="flex gap-2">
           <button
             onClick={() => setStep("attribution")}
