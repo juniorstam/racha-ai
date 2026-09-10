@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { track } from "@vercel/analytics";
 import { defaultBillName } from "./utils";
 
 export type BillItem = {
@@ -128,7 +129,10 @@ export const useStore = create<AppState>()(
       step: "home",
 
       setBill: (b) => set((s) => ({ bill: { ...s.bill, ...b } })),
-      setStep: (step) => set({ step }),
+      setStep: (step) => {
+        track(`step_${step}`);
+        set({ step });
+      },
 
       addItem: (item) =>
         set((s) => ({ bill: { ...s.bill, items: [...s.bill.items, item] } })),
